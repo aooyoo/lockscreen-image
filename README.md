@@ -1,4 +1,4 @@
-# 所屏应用图片库
+# 锁屏应用图片库
 
 
 ## 约定
@@ -15,8 +15,7 @@ iPhone6 Plus | i6p
 
 #### 交互数据规范
 
-*   API采用REST URL
-*   在登录后，客户端需要在http请求的header中添加 自定义数据: X-Secret-key0
+*   客户端需要启用http cookie
 *   客户端若需要POST数据，就按照各自API定义的数据进行, 发送的是标准HTML 表单
 *   服务端返回客户端的数据为json
 
@@ -46,16 +45,17 @@ v1.0    |   2015-01-17  | 创建
 
 
 功能                   |   URL                                                            |  Method   |  Description           
------------------------|------------------------------------------------------------------|-----------|-------------------------
+--------------------- -|------------------------------------------------------------------|-----------|-------------------------
 登录                   | `/login/`                                                        | POST      | 每次APP打开后第一个请求.
-获取背景 最热          | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
-获取背景 最新          | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
-获取前景 最热          | `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
-获取前景 最新          | `/foreground/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
-获取前景分类           | `/foreground/category/`                                          | GET       | 获取前景分类.
+获取背景 最热           | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
+获取背景 最新           | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
+获取前景 最热           | `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
+获取前景 最新           | `/foreground/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
+获取前景分类            | `/foreground/category/`                                          | GET       | 获取前景分类.
 收藏                   | `/collect/`                                                      | POST      |
+取消收藏               | `/uncollect/`                                                     | POST      |
 下载                   | `/download/`                                                     | POST      |
-获取收藏的前背景组合   | `/collect/show/?bucket=<bucket-id>`                              | GET       |
+获取收藏的前背景组合     | `/collect/show/?bucket=<bucket-id>`                              | GET       |
 反馈                   | `/feedback/`                                                     | POST      |
 
 
@@ -76,16 +76,13 @@ POST Form:
 {
     'ret': 0,
     'data': {
-        'secret-key': <KEY>,
         'version': <version>,               # 最新版本
         'copyright': <copyright text>       # 版权申明
     }
 }
 ```
 
-后续请求需要把这个 KEY 加到HTTP HEADER中：
-
-X-Secret-key0: KEY
+login 过后，根据response， 客户端http client 应该自动设置cookie
 
 
 --------
@@ -103,7 +100,7 @@ GET PARAM:
     客户端每页显示多少，服务端不关心，并且客户端自己分页。
 
 
-    当用户快要滑动到最后时，可以发送下一个请求（请求中的bucket-id为当前返回中的next-bucket-id），获取新的数据
+    当用户快要滑动到最后时，可以发送下一个请求（请求中的bucket-id为当前返回中的next_bucket_id），获取新的数据
 
 
 ###### Response
@@ -112,13 +109,23 @@ GET PARAM:
 {
     'ret': 0,
     'data': {
-        'next-bucket-id': <bucket-id>,
-        'images': [url1, url2, url3,...]
+        'next_bucket_id': <bucket-id>,
+        'images': [
+            {
+                'ID': <image id>,
+                'url': <image url>
+            },
+            {
+                'ID': <image id>,
+                'url': <image url>
+            },
+            ...
+        ]
     }
 }
 ```
 
-返回的<bucket-id>如果为数字，表示后续还有内容，如果为`NULL` ,表示后续没有内容
+返回的`<bucket-id>`如果为数字，表示后续还有内容，如果为`NULL` ,表示后续没有内容
 
 
 --------
@@ -183,8 +190,8 @@ GET PARAM:
 ###### Request
 
 POST Form:
-*   background: <background-id>
-*   foreground: <foreground-id>
+*   background: `<background-id>`
+*   foreground: `<foreground-id>`
 
 ###### Response
 
@@ -193,6 +200,23 @@ POST Form:
     'ret': 0
 }
 ```
+
+--------
+
+#### `/uncollect/`
+
+取消收藏
+
+###### Request
+
+同上
+
+###### Response
+
+同上
+
+
+
 
 --------
 
@@ -222,13 +246,25 @@ GET PARAM:
         'next-bucket-id': <bucket-id>,
         'items': [
             {
-                'background': <url>,
-                'foreground': <url>,
+                'background': {
+                    'ID': <ID>,
+                    'url': <url>,
+                }
+                'foreground': {
+                    'ID': <ID>,
+                    'url': <url>,
+                }
             },
 
             {
-                'background': <url>,
-                'foreground': <url>,
+                'background': {
+                    'ID': <ID>,
+                    'url': <url>,
+                }
+                'foreground': {
+                    'ID': <ID>,
+                    'url': <url>,
+                }
             },
 
             ...
