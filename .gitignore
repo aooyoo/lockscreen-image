@@ -1,0 +1,12 @@
+*.pyc
+*.swp
+*.bak
+*.log
+*.o
+*.so
+*.log
+
+env
+logs
+run
+
