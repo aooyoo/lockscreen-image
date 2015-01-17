@@ -16,19 +16,21 @@ iPhone6 Plus | i6p
 #### 交互数据规范
 
 *   API采用REST URL
-*   客户端把手机UDID和型号代码 以get params的形式加在url后面
-*   客户端若需要POST数据，就按照各自API定义操作
+*   在登录后，客户端需要在http请求的header中添加 自定义数据: X-Secret-key0
+*   客户端若需要POST数据，就按照各自API定义的数据进行, 发送的是标准HTML 表单
 *   服务端返回客户端的数据为json
 
     格式：
 
+    ```
     {
         ret: 返回码,
         data: 返回数据
     }
+    ```
 
-    ret 0 表示成功，此时根据不同请求会（或不会）带有data字段
-    ret 非0 表示失败，此时不会有data字段
+    *   ret 0 表示成功，此时根据不同请求会（或不会）带有data字段
+    *   ret 非0 表示失败，此时不会有data字段
 
 
 
@@ -45,20 +47,20 @@ v1.0    |   2015-01-17  | 创建
 
 功能                   |   URL                                                            |  Method   |  Description           
 -----------------------|------------------------------------------------------------------|-----------|-------------------------
-登录                   | /login/                                                          | POST      | 每次APP打开后第一个请求.
-获取背景 最热          | /background/hot/?bucket=<bucket-id>                              | GET       | 获取最热背景. 
-获取背景 最新          | /background/new/?bucket=<bucket-id>                              | GET       | 获取最新背景. 
-获取前景 最热          | /background/hot/?category=<category-id>&bucket=<bucket-id>       | GET       | 获取最热前景. 
-获取前景 最新          | /background/new/?category=<category-id>&bucket=<bucket-id>       | GET       | 获取最新前景. 
-获取前景分类           | /foreground/category/                                            | GET       | 获取前景分类.
-收藏                   | /collect/                                                        | POST      |
-下载                   | /download/                                                       | POST      |
+登录                   | `/login/`                                                        | POST      | 每次APP打开后第一个请求.
+获取背景 最热          | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
+获取背景 最新          | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
+获取前景 最热          | `/background/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
+获取前景 最新          | `/background/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
+获取前景分类           | `/foreground/category/`                                          | GET       | 获取前景分类.
+收藏                   | `/collect/`                                                      | POST      |
+下载                   | `/download/`                                                     | POST      |
 
 
 --------
 
 
-#### /login/
+#### `/login/`
 
 ###### Request
 
@@ -84,8 +86,8 @@ X-Secret-key0: KEY
 
 --------
 
-#### /background/hot/?bucket=<bucket-id>
-#### /background/new/?bucket=<bucket-id>
+#### `/background/hot/?bucket=<bucket-id>`
+#### `/background/new/?bucket=<bucket-id>`
 
 
 ###### Request
@@ -117,8 +119,8 @@ GET PARAM:
 --------
 
 
-#### /background/hot/?category=<category-id>&bucket=<bucket-id>
-#### /background/new/?category=<category-id>&bucket=<bucket-id>
+#### `/background/hot/?category=<category-id>&bucket=<bucket-id>`
+#### `/background/new/?category=<category-id>&bucket=<bucket-id>`
 
 ###### Request
 
@@ -130,7 +132,11 @@ GET PARAM:
 
 同上
 
-#### /foreground/category/
+
+--------
+
+
+#### `/foreground/category/`
 
 获取前景分类
 ###### Request
@@ -157,7 +163,7 @@ GET PARAM:
 
 --------
 
-#### /collect/
+#### `/collect/`
 
 收藏
 
@@ -177,7 +183,7 @@ POST Form:
 
 --------
 
-#### /download/
+#### `/download/`
 
 下载
 
