@@ -56,6 +56,7 @@ v1.0    |   2015-01-17  | 创建
 收藏                   | `/collect/`                                                      | POST      |
 下载                   | `/download/`                                                     | POST      |
 获取收藏的前背景组合   | `/collect/show/?bucket=<bucket-id>`                              | GET       |
+反馈                   | `/feedback/`                                                     | POST      |
 
 
 --------
@@ -75,7 +76,9 @@ POST Form:
 {
     'ret': 0,
     'data': {
-        'secret-key': <KEY>
+        'secret-key': <KEY>,
+        'version': <version>,               # 最新版本
+        'copyright': <copyright text>       # 版权申明
     }
 }
 ```
@@ -238,3 +241,20 @@ GET PARAM:
 返回按照收藏时间排序，最新收藏排在前面
 
 
+--------
+
+#### `/feedback/`
+
+反馈
+
+###### Request
+POST Form:
+*   text:  反馈的文字
+
+###### Response
+
+```
+{
+    'ret': 0,
+}
+```
