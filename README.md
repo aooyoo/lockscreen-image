@@ -50,11 +50,12 @@ v1.0    |   2015-01-17  | 创建
 登录                   | `/login/`                                                        | POST      | 每次APP打开后第一个请求.
 获取背景 最热          | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
 获取背景 最新          | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
-获取前景 最热          | `/background/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
-获取前景 最新          | `/background/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
+获取前景 最热          | `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
+获取前景 最新          | `/foreground/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
 获取前景分类           | `/foreground/category/`                                          | GET       | 获取前景分类.
 收藏                   | `/collect/`                                                      | POST      |
 下载                   | `/download/`                                                     | POST      |
+获取收藏的前背景组合   | `/collect/show/?bucket=<bucket-id>`                              | GET       |
 
 
 --------
@@ -98,7 +99,8 @@ GET PARAM:
     bucket-id 是一个抽象概念，如果没有此参数，服务器返回是当前排序规则中前45（暂定）个元素.
     客户端每页显示多少，服务端不关心，并且客户端自己分页。
 
-    当用户快要滑动到最后时，可以发送下一个请求，获取新的数据
+
+    当用户快要滑动到最后时，可以发送下一个请求（请求中的bucket-id为当前返回中的next-bucket-id），获取新的数据
 
 
 ###### Response
@@ -119,8 +121,8 @@ GET PARAM:
 --------
 
 
-#### `/background/hot/?category=<category-id>&bucket=<bucket-id>`
-#### `/background/new/?category=<category-id>&bucket=<bucket-id>`
+#### `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`
+#### `/foreground/new/?category=<category-id>&bucket=<bucket-id>`
 
 ###### Request
 
@@ -150,10 +152,18 @@ GET PARAM:
     'ret': 0,
     'data': [
         {
-            'id': <分类ID>,
-            'name': <分类名字>,
-            'icon': <icon url>
-        }
+            'id': <分类1 ID>,
+            'name': <分类1 名字>,
+            'icon': <icon1  url>
+        },
+    
+        {
+            'id': <分类2 ID>,
+            'name': <分类2 名字>,
+            'icon': <icon2  url>
+        },
+
+        ...
     
     ]
 }
@@ -190,15 +200,41 @@ POST Form:
 同上
 
 
+--------
 
+#### /collect/show/
 
+获取已经收藏的前背景组合
 
+###### Request
+GET PARAM:
+*   bucket: 同上
 
+###### Response
 
+```
+{
+    'ret': 0,
+    'data': {
+        'next-bucket-id': <bucket-id>,
+        'items': [
+            {
+                'background': <url>,
+                'foreground': <url>,
+            },
 
+            {
+                'background': <url>,
+                'foreground': <url>,
+            },
 
+            ...
+        ]
+    }
+}
 
+```
 
-
+返回按照收藏时间排序，最新收藏排在前面
 
 
