@@ -44,19 +44,19 @@ v1.0    |   2015-01-17  | 创建
 ----------------
 
 
-功能                   |   URL                                                            |  Method   |  Description           
---------------------- -|------------------------------------------------------------------|-----------|-------------------------
-登录                   | `/login/`                                                        | POST      | 每次APP打开后第一个请求.
-获取背景 最热           | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
-获取背景 最新           | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
-获取前景 最热           | `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
-获取前景 最新           | `/foreground/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
-获取前景分类            | `/foreground/category/`                                          | GET       | 获取前景分类.
-收藏                   | `/collect/`                                                      | POST      |
-取消收藏               | `/uncollect/`                                                     | POST      |
-下载                   | `/download/`                                                     | POST      |
-获取收藏的前背景组合     | `/collect/show/?bucket=<bucket-id>`                              | GET       |
-反馈                   | `/feedback/`                                                     | POST      |
+功能                  |   URL                                                            |  Method   |  Description           
+----------------------|------------------------------------------------------------------|-----------|-------------------------
+登录                  | `/login/`                                                        | POST      | 每次APP打开后第一个请求.
+获取背景 最热         | `/background/hot/?bucket=<bucket-id>`                            | GET       | 获取最热背景. 
+获取背景 最新         | `/background/new/?bucket=<bucket-id>`                            | GET       | 获取最新背景. 
+获取前景 最热         | `/foreground/hot/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最热前景. 
+获取前景 最新         | `/foreground/new/?category=<category-id>&bucket=<bucket-id>`     | GET       | 获取最新前景. 
+获取前景分类          | `/foreground/category/`                                          | GET       | 获取前景分类.
+收藏                  | `/collect/`                                                      | POST      |
+取消收藏              | `/uncollect/`                                                    | POST      |
+下载                  | `/download/`                                                     | POST      |
+获取收藏的前背景组合  | `/collect/show/?bucket=<bucket-id>`                              | GET       |
+反馈                  | `/feedback/`                                                     | POST      |
 
 
 --------
