@@ -9,4 +9,7 @@
 env
 logs
 run
+.idea
 
+
+project/project/local_settings.py

@@ -162,13 +162,13 @@ GET PARAM:
     'ret': 0,
     'data': [
         {
-            'id': <分类1 ID>,
+            'ID': <分类1 ID>,
             'name': <分类1 名字>,
             'icon': <icon1  url>
         },
     
         {
-            'id': <分类2 ID>,
+            'ID': <分类2 ID>,
             'name': <分类2 名字>,
             'icon': <icon2  url>
         },
@@ -179,6 +179,7 @@ GET PARAM:
 }
 ```
 
+**NOTE:** 默认ID为2的分类是 我的收藏
 
 
 --------
@@ -294,3 +295,10 @@ POST Form:
     'ret': 0,
 }
 ```
+
+
+
+## 错误代码
+
+见 [errorcode.json][/errorcode.json]
+
