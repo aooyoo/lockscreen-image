@@ -33,7 +33,11 @@ class ImageGetter(object):
     def __init__(self, request):
         self.request = request
         self.bucket = int(request.GET.get('bucket', 0))
-        self.category = request.GET.get('category', '')
+        self.category = int(request.GET.get('category', 0))
+        if self.category == 1:
+            # all
+            self.category = 0
+
         self.phone = request.session['phone']
 
         if request.path.endswith('/hot/'):
@@ -47,7 +51,7 @@ class ImageGetter(object):
 
     def build_sql_for_foreground(self):
         if self.category:
-            sql = "select id, images->>%s as image_key from {0} where (images->>%s) is not null and %s = any(categories) order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
+            sql = "select id, images->>%s as image_key from {0} where (images->>%s) is not null and array[%s] <@ categories order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
             params = (self.phone, self.phone, self.category, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
         else:
             sql = "select id, images->>%s as image_key from {0} where (images->>%s) is not null order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
@@ -101,7 +105,11 @@ class ImageGetter(object):
     @classmethod
     def as_view(cls):
         def wrapper(request):
-            self = cls(request)
+            try:
+                self = cls(request)
+            except:
+                raise ProjectException(ErrorCode.REQUEST_ERROR)
+
             return self.get()
         return wrapper
 

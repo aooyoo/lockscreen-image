@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 
+from jsonfield import JSONField
 
 def upload_to(instance, filename, subdir):
     _, ext = os.path.splitext(filename)
@@ -46,10 +47,9 @@ class Image(models.Model):
     # 最热图片从这里排序获取
     score = models.IntegerField(default=0, db_index=True)
 
-    # images is json data
     # {'i4': key, 'i5': key, ...}
     # http://www.postgresql.org/docs/9.4/static/functions-json.html
-    images = models.TextField()
+    images = JSONField()
 
     class Meta:
         abstract = True
