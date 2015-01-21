@@ -23,6 +23,9 @@ def upload_foreground_category_to(instance, filename):
 
 
 class ForegroundCategory(models.Model):
+    # 前景分类
+    # id 1 固定为 全部
+    # id 2 固定为 我的收藏
     id = models.IntegerField(primary_key=True)
     name = models.TextField(unique=True)
     icon = models.FileField(upload_to=upload_foreground_category_to)
@@ -68,15 +71,16 @@ class ImageBackground(Image):
 
 
 class ImagePair(models.Model):
-    phone_id = models.TextField(db_index=True)
-    foreground_id = models.TextField(db_index=True)
-    background_id = models.TextField(db_index=True)
+    # 收藏/下载记录前景和背景
+    phone_udid = models.TextField()
+    foreground_id = models.TextField()
+    background_id = models.TextField()
 
     action_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
-
+        index_together = ['phone_id', 'foreground_id', 'background_id']
 
 
 class ImagePairForCollect(ImagePair):

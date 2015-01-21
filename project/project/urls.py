@@ -17,10 +17,14 @@ urlpatterns = [
     url(r'^callback/background-done/$', apps.upload.views.callback_background),
 
 
-    url(r'^foreground/hot/$', apps.image.views.ImageGetter.as_view()),
-    url(r'^foreground/new/$', apps.image.views.ImageGetter.as_view()),
-    url(r'^background/hot/$', apps.image.views.ImageGetter.as_view()),
-    url(r'^background/new/$', apps.image.views.ImageGetter.as_view()),
+    url(r'^foreground/hot/$', apps.image.views.ImageGetterView.as_view()),
+    url(r'^foreground/new/$', apps.image.views.ImageGetterView.as_view()),
+    url(r'^background/hot/$', apps.image.views.ImageGetterView.as_view()),
+    url(r'^background/new/$', apps.image.views.ImageGetterView.as_view()),
+
+    url(r'^collect/$', apps.image.views.ImagePairView.as_view()),
+    url(r'^uncollect/$', apps.image.views.ImagePairView.as_view()),
+    url(r'^download/$', apps.image.views.ImagePairView.as_view()),
 
     url(r'^foreground/category/$', apps.image.views.get_foregound_category)
 ]

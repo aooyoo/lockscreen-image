@@ -13,8 +13,11 @@ from apps.phone.forms import LoginForm
 def login(request):
     if request.method == 'GET':
         return render_to_response(
-            "login.html",
-            {'form': LoginForm().as_p()}
+            "test.html",
+            {
+                'action': request.path,
+                'form': LoginForm().as_p()
+            }
         )
 
     form = LoginForm(request.POST)

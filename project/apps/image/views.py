@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
+
 from django.conf import settings
 from django.http import JsonResponse
+from django.shortcuts import render_to_response
 from django.db import connection
-from apps.image.models import ForegroundCategory, ImageBackground, ImageForeground
+from django.db import transaction
+from django.db.models import Q
+from django.db import DataError
+from django.views.generic import View
+
+
+from apps.image.models import ForegroundCategory, ImageBackground, ImageForeground, ImagePairForCollect, ImagePairForDownload
+from apps.image.forms import ImagePairForm
 
 from project.exceptions import ProjectException
 from project.errorcode import ErrorCode
@@ -27,7 +36,7 @@ def get_foregound_category(request):
 
 
 
-class ImageGetter(object):
+class ImageGetterView(object):
     BUCKET_SIZE = 45
 
     def __init__(self, request):
@@ -113,3 +122,114 @@ class ImageGetter(object):
             return self.get()
         return wrapper
 
+
+class ImagePairView(View):
+    def get(self, request):
+        return render_to_response(
+            "test.html",
+            {
+                'action': request.path,
+                'form': ImagePairForm().as_p()
+            }
+        )
+
+    def post(self, request):
+        form = ImagePairForm(request.POST)
+        if not form.is_valid():
+            raise ProjectException(ErrorCode.REQUEST_ERROR)
+
+        form_data = form.cleaned_data
+        background_id = form_data['background']
+        foreground_id = form_data['foreground']
+
+        try:
+            if not ImageBackground.objects.filter(id=background_id).exists():
+                raise ProjectException(ErrorCode.BACKGROUND_NOT_EXIST)
+
+            if not ImageForeground.objects.filter(id=foreground_id).exists():
+                raise ProjectException(ErrorCode.FOREGROUND_NOT_EXIST)
+        except DataError as e:
+            print e
+            raise ProjectException(ErrorCode.REQUEST_ERROR)
+
+
+        if request.path == '/collect/':
+            self.post_collect(request, background_id, foreground_id)
+        elif request.path == '/uncollect/':
+            self.post_uncollect(request, background_id, foreground_id)
+        else:
+            self.post_download(request, background_id, foreground_id)
+
+        return JsonResponse({'ret': 0})
+
+
+    def post_collect(self, request, background_id, foreground_id):
+        # 收藏
+        udid = request.session['udid']
+
+        condition = Q(phone_udid=udid) & Q(background_id=background_id) & Q(foreground_id=foreground_id)
+        if ImagePairForCollect.objects.filter(condition).exists():
+            return
+
+        ImagePairForCollect.objects.create(
+            phone_udid=udid,
+            background_id=background_id,
+            foreground_id=foreground_id
+        )
+
+        self.incr_background_score(background_id)
+        self.incr_foreground_score(foreground_id)
+
+
+    def post_uncollect(self, request, background_id, foreground_id):
+        # 取消收藏
+        udid = request.session['udid']
+
+        condition = Q(phone_udid=udid) & Q(background_id=background_id) & Q(foreground_id=foreground_id)
+
+        pair = ImagePairForCollect.objects.filter(condition)
+        if not pair.exists():
+            raise ProjectException(ErrorCode.COLLECTION_PAIR_NOT_EXIST)
+
+        pair.delete()
+
+        self.incr_background_score(background_id, value=-1)
+        self.incr_foreground_score(foreground_id, value=-1)
+
+
+    def post_download(self, request, background_id, foreground_id):
+        # 下载
+        udid = request.session['udid']
+
+        condition = Q(phone_udid=udid) & Q(background_id=background_id) & Q(foreground_id=foreground_id)
+
+        if ImagePairForDownload.objects.filter(condition).exists():
+            return
+
+        ImagePairForDownload.objects.create(
+            phone_udid=udid,
+            background_id=background_id,
+            foreground_id=foreground_id
+        )
+
+        self.incr_background_score(background_id)
+        self.incr_foreground_score(foreground_id)
+
+
+
+    def incr_background_score(self, background_id, value=1):
+        with transaction.atomic():
+            image = ImageBackground.objects.select_for_update().get(id=background_id)
+            image.score += value
+            if image.score < 0:
+                image.score = 0
+            image.save()
+
+
+    def incr_foreground_score(self, foreground_id, value=1):
+        with transaction.atomic():
+            image = ImageForeground.objects.select_for_update().get(id=foreground_id)
+            image.score += value
+            if image.score < 0:
+                image.score = 0
+            image.save()

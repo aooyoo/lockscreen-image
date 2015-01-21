@@ -12,12 +12,14 @@ class ErrorCode(object):
     NEED_LOGIN = 10
     FOREGROUND_NOT_EXIST = 20
     BACKGROUND_NOT_EXIST = 21
+    COLLECTION_PAIR_NOT_EXIST = 30
 
     LANGUAGE_MAP_ZH = {
         1: '请求错误',
         10: '需要重新登录',
         20: '找不到此前景图片',
         21: '找不到此背景图片',
+        30: '找不的这个收藏组合，无法取消收藏',
     }
 
     @classmethod

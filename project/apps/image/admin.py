@@ -34,8 +34,8 @@ class ImageBackgroundAdmin(admin.ModelAdmin):
 
 @admin.register(ImagePairForCollect)
 class ImagePairForCollectAdmin(admin.ModelAdmin):
-    list_display = ('phone_id', 'foreground_id', 'background_id', 'action_date')
+    list_display = ('phone_udid', 'foreground_id', 'background_id', 'action_date')
 
 @admin.register(ImagePairForDownload)
 class ImagePairForDownloadAdmin(admin.ModelAdmin):
-    list_display = ('phone_id', 'foreground_id', 'background_id', 'action_date')
+    list_display = ('phone_udid', 'foreground_id', 'background_id', 'action_date')
