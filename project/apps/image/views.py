@@ -80,8 +80,6 @@ class ImageGetterView(object):
         else:
             sql, parms = self.build_sql_for_background()
 
-        print sql
-        print parms
         with connection.cursor() as c:
             c.execute(sql, parms)
             result = c.fetchall()
