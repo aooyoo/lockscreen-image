@@ -13,3 +13,5 @@ class FeedBack(models.Model):
 
     class Meta:
         db_table = 'feedback'
+        verbose_name = '反馈'
+        verbose_name_plural = '反馈'

@@ -8,6 +8,8 @@ class Config(models.Model):
 
     class Meta:
         db_table = 'project_config'
+        verbose_name = '设置'
+        verbose_name_plural = '设置'
 
 
     @classmethod

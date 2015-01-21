@@ -14,6 +14,7 @@ from apps.image.models import (
 @admin.register(ForegroundCategory)
 class ForegroundCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'icon', 'IconDisplay')
+    exclude = ['key',]
 
     def IconDisplay(self, obj):
         return '<img src="{0}" width="100px"/>'.format(obj.image_url)

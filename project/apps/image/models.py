@@ -26,13 +26,15 @@ class ForegroundCategory(models.Model):
     # 前景分类
     # id 1 固定为 全部
     # id 2 固定为 我的收藏
-    id = models.IntegerField(primary_key=True)
-    name = models.TextField(unique=True)
-    icon = models.FileField(upload_to=upload_foreground_category_to)
+    id = models.IntegerField('ID', primary_key=True)
+    name = models.TextField('名字', unique=True)
+    icon = models.FileField('图标', upload_to=upload_foreground_category_to)
     key = models.TextField(blank=True)
 
     class Meta:
         db_table = 'category_foreground'
+        verbose_name = '前景分类'
+        verbose_name_plural = '前景分类'
 
     @property
     def image_url(self):
@@ -63,11 +65,15 @@ class ImageForeground(Image):
 
     class Meta:
         db_table = 'image_foreground'
+        verbose_name = '前景图片'
+        verbose_name_plural = '前景图片'
 
 
 class ImageBackground(Image):
     class Meta:
         db_table = 'image_background'
+        verbose_name = '背景图片'
+        verbose_name_plural = '背景图片'
 
 
 class ImagePair(models.Model):
@@ -89,10 +95,14 @@ class ImagePair(models.Model):
 class ImagePairForCollect(ImagePair):
     class Meta:
         db_table = 'image_pair_collect'
+        verbose_name = '收藏记录'
+        verbose_name_plural = '收藏记录'
 
 class ImagePairForDownload(ImagePair):
     class Meta:
         db_table = 'image_pair_download'
+        verbose_name = '下载记录'
+        verbose_name_plural = '下载记录'
 
 
 def upload_category_icon(sender, instance, created, **kwargs):

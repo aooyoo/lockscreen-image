@@ -7,6 +7,7 @@ class UploadForegroundAdmin(admin.ModelAdmin):
     list_display = ('id', 'package', 'Categories', 'upload_at', 'done')
 
     filter_horizontal = ['categories',]
+    exclude = ['done']
 
     def Categories(self, obj):
         categories = obj.get_all_category_names()
@@ -15,3 +16,4 @@ class UploadForegroundAdmin(admin.ModelAdmin):
 @admin.register(UploadBackground)
 class UploadBackgroundAdmin(admin.ModelAdmin):
     list_display = ('id', 'package', 'upload_at', 'done')
+    exclude = ['done']

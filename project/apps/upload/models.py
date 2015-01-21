@@ -20,7 +20,7 @@ def upload_background_zip_to(instance, filename):
 
 
 class Upload(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     upload_at = models.DateTimeField(auto_now_add=True)
     done = models.BooleanField(default=False)
