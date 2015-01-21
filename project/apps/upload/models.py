@@ -30,7 +30,7 @@ class Upload(models.Model):
 
 
 class UploadForeground(Upload):
-    package = models.FileField("ZIP包" upload_to=upload_foreground_zip_to)
+    package = models.FileField("ZIP包", upload_to=upload_foreground_zip_to)
     categories = models.ManyToManyField('image.ForegroundCategory')
     class Meta:
         db_table = 'upload_foreground'
