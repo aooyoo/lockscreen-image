@@ -1,4 +1,5 @@
 
+from django.conf import settings
 from django.contrib import admin
 
 from apps.image.models import (
@@ -34,8 +35,23 @@ class ImageBackgroundAdmin(admin.ModelAdmin):
 
 @admin.register(ImagePairForCollect)
 class ImagePairForCollectAdmin(admin.ModelAdmin):
-    list_display = ('phone_udid', 'foreground_id', 'background_id', 'action_date')
+    list_display = ('phone_udid', 'foreground_id', 'background_id', 'Foreground', 'Background', 'action_date')
+
+    def Foreground(self, obj):
+        return '<img src="{0}" width="100px" />'.format(settings.QINIU_DOMAIN + obj.foreground_key)
+    Foreground.allow_tags = True
+
+    def Background(self, obj):
+        return '<img src="{0}" width="100px" />'.format(settings.QINIU_DOMAIN + obj.background_key)
+    Background.allow_tags = True
 
 @admin.register(ImagePairForDownload)
 class ImagePairForDownloadAdmin(admin.ModelAdmin):
-    list_display = ('phone_udid', 'foreground_id', 'background_id', 'action_date')
+    list_display = ('phone_udid', 'foreground_id', 'background_id', 'Foreground', 'Background', 'action_date')
+    def Foreground(self, obj):
+        return '<img src="{0}" width="100px" />'.format(settings.QINIU_DOMAIN + obj.foreground_key)
+    Foreground.allow_tags = True
+
+    def Background(self, obj):
+        return '<img src="{0}" width="100px" />'.format(settings.QINIU_DOMAIN + obj.background_key)
+    Background.allow_tags = True

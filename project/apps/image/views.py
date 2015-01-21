@@ -142,28 +142,43 @@ class ImagePairView(View):
         background_id = form_data['background']
         foreground_id = form_data['foreground']
 
-        try:
-            if not ImageBackground.objects.filter(id=background_id).exists():
-                raise ProjectException(ErrorCode.BACKGROUND_NOT_EXIST)
+        phone = request.session['phone']
 
-            if not ImageForeground.objects.filter(id=foreground_id).exists():
-                raise ProjectException(ErrorCode.FOREGROUND_NOT_EXIST)
-        except DataError as e:
-            print e
+        try:
+            image_fore = ImageForeground.objects.get(id=foreground_id)
+        except ImageForeground.DoesNotExist:
+            raise ProjectException(ErrorCode.FOREGROUND_NOT_EXIST)
+        except DataError:
+            raise ProjectException(ErrorCode.REQUEST_ERROR)
+
+        try:
+            image_back = ImageBackground.objects.get(id=background_id)
+        except ImageBackground.DoesNotExist:
+            raise ProjectException(ErrorCode.BACKGROUND_NOT_EXIST)
+        except DataError:
+            raise ProjectException(ErrorCode.REQUEST_ERROR)
+
+        try:
+            foreground_key = image_fore.images[phone]
+            background_key = image_back.images[phone]
+        except KeyError:
+            print "==== ERROR ===="
+            print "can't find the key of this phone: {0}".format(phone)
+            print "foreground_id: {0}, background_id: {1}".format(foreground_id, background_id)
             raise ProjectException(ErrorCode.REQUEST_ERROR)
 
 
         if request.path == '/collect/':
-            self.post_collect(request, background_id, foreground_id)
+            self.post_collect(request, background_id, foreground_id, foreground_key, background_key)
         elif request.path == '/uncollect/':
             self.post_uncollect(request, background_id, foreground_id)
         else:
-            self.post_download(request, background_id, foreground_id)
+            self.post_download(request, background_id, foreground_id, foreground_key, background_key)
 
         return JsonResponse({'ret': 0})
 
 
-    def post_collect(self, request, background_id, foreground_id):
+    def post_collect(self, request, background_id, foreground_id, foreground_key, background_key):
         # 收藏
         udid = request.session['udid']
 
@@ -173,8 +188,10 @@ class ImagePairView(View):
 
         ImagePairForCollect.objects.create(
             phone_udid=udid,
+            foreground_id=foreground_id,
             background_id=background_id,
-            foreground_id=foreground_id
+            foreground_key=foreground_key,
+            background_key=background_key,
         )
 
         self.incr_background_score(background_id)
@@ -197,7 +214,7 @@ class ImagePairView(View):
         self.incr_foreground_score(foreground_id, value=-1)
 
 
-    def post_download(self, request, background_id, foreground_id):
+    def post_download(self, request, background_id, foreground_id, foreground_key, background_key):
         # 下载
         udid = request.session['udid']
 
@@ -208,8 +225,10 @@ class ImagePairView(View):
 
         ImagePairForDownload.objects.create(
             phone_udid=udid,
+            foreground_id=foreground_id,
             background_id=background_id,
-            foreground_id=foreground_id
+            foreground_key=foreground_key,
+            background_key=background_key,
         )
 
         self.incr_background_score(background_id)
@@ -233,3 +252,31 @@ class ImagePairView(View):
             if image.score < 0:
                 image.score = 0
             image.save()
+
+
+
+def show_collected_images(request):
+    # 获取收藏的前景/背景组合
+    BUCKET_SIZE = 45
+    try:
+        bucket = int(request.GET.get('bucket', 0))
+    except:
+        raise ProjectException(ErrorCode.REQUEST_ERROR)
+
+    udid = request.session['udid']
+    phone = request.session['phone']
+
+    paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')[bucket*BUCKET_SIZE, (bucket+1)*BUCKET_SIZE]
+
+    if paris.count < BUCKET_SIZE:
+        next_bucket = None
+    else:
+        next_bucket = bucket + 1
+
+    item_background_ids = []
+    item_foreground_ids = []
+
+    for p in paris:
+        item_background_ids.append(p.background_id)
+        item_foreground_ids.append(p.foreground_id)
+

@@ -76,6 +76,9 @@ class ImagePair(models.Model):
     foreground_id = models.TextField()
     background_id = models.TextField()
 
+    foreground_key = models.TextField()
+    background_key = models.TextField()
+
     action_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
