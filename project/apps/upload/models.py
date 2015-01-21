@@ -38,6 +38,10 @@ class UploadForeground(Upload):
     def get_all_category_names(self):
         return [c.name for c in self.categories.all()]
 
+    def get_all_category_ids(self):
+        return [c.id for c in self.categories.all()]
+
+
 class UploadBackground(Upload):
     package = models.FileField(upload_to=upload_background_zip_to)
     class Meta:

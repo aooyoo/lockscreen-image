@@ -56,7 +56,7 @@ class Image(models.Model):
 
 
 class ImageForeground(Image):
-    categories = ArrayField(models.TextField())
+    categories = ArrayField(models.IntegerField(), default=[])
 
     class Meta:
         db_table = 'image_foreground'

@@ -125,10 +125,13 @@ SESSION_REDIS_PORT = 6379
 SESSION_REDIS_DB = 0
 
 # qiniu
+###################################
+# this settings MUST override in local_settings
 QINIU_DOMAIN = None
 QINIU_ACCESS_KEY = None
 QINIU_SECRET_KEY = None
 QINIU_BUCKET = None
+##################################
 
 # beanstalkd
 BEAN_HOST = '127.0.0.1'
