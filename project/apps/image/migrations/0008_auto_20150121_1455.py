@@ -8,7 +8,7 @@ import django.contrib.postgres.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('image', '0007_auto_20150121_1437'),
+        ('image', '0007_auto_20150121_1450'),
     ]
 
     operations = [
