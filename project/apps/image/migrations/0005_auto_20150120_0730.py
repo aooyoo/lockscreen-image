@@ -11,7 +11,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='foregroundcategory',
+            name='id',
+        ),
+        migrations.AddField(
             model_name='foregroundcategory',
             name='id',
             field=models.IntegerField(serialize=False, primary_key=True),
