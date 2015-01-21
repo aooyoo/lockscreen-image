@@ -14,12 +14,17 @@ sys.path.append(PARENT_PATH)
 import re
 import json
 import zipfile
+import datetime
 
 import beanstalkc
 import sevencow
 import requests
 
 from project import settings
+
+
+def log(text):
+    print "{0}: {1}".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), text)
 
 
 # job = {
@@ -71,7 +76,6 @@ class ImageUpload(object):
     def parse_zip_and_upload(self, zip_file):
         result = []
         z = zipfile.ZipFile(zip_file)
-        print z.namelist()
 
         for name in z.namelist():
             if IMAGE_PATTERN.search(name) is None:
@@ -89,10 +93,23 @@ class ImageUpload(object):
 
 
     def feedback(self, callback_url, data):
-        print "FEEDBACK"
-        print data
         requests.post(callback_url, data=json.dumps(data))
 
+
+    def process(self, job):
+        log("---- New Job {0} ----".format(job.jid))
+        log(job.body)
+        data = json.loads(job.body)
+        zip_file = data['zip']
+        callback_url = data['callback_url']
+        callback_data = data.get('callback_data', {})
+
+        result_data = self.parse_zip_and_upload(zip_file)
+        callback_data['images'] = result_data
+        self.feedback(callback_url, callback_data)
+
+        job.delete()
+        log("---- End Job {0} ----".format(job.jid))
 
 
     @classmethod
@@ -100,21 +117,19 @@ class ImageUpload(object):
         self = cls()
         while True:
             job = self.bean.reserve()
-            print "GOT"
-            print job.body
-            data = json.loads(job.body)
-            zip_file = data['zip']
-            callback_url = data['callback_url']
-            callback_data = data.get('callback_data', {})
-
-            result_data = self.parse_zip_and_upload(zip_file)
-            callback_data['images'] = result_data
-            self.feedback(callback_url, callback_data)
-
-            job.delete()
-            print "FINISH"
+            self.process(job)
 
 
 if __name__ == '__main__':
-    ImageUpload.run()
+    from daemonized import Daemonize
+
+    log_file = sys.argv[1]
+    log_file = os.path.join(CURRENT_PATH, 'run', log_file)
+
+    @Daemonize(stdout=log_file, stderr=log_file)
+    def run():
+        ImageUpload.run()
+
+    run()
+
 
