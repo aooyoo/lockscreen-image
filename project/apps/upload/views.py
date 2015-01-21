@@ -14,7 +14,7 @@ def callback_foreground(request):
     images = data['images']
 
     upload_obj = UploadForeground.objects.get(id=upload_id)
-    categories = upload_obj.get_all_category_names()
+    categories = upload_obj.get_all_category_ids()
 
     ImageObjs = []
     for image in images:
