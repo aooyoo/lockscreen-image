@@ -30,10 +30,12 @@ class Upload(models.Model):
 
 
 class UploadForeground(Upload):
-    package = models.FileField(upload_to=upload_foreground_zip_to)
+    package = models.FileField("ZIP包" upload_to=upload_foreground_zip_to)
     categories = models.ManyToManyField('image.ForegroundCategory')
     class Meta:
         db_table = 'upload_foreground'
+        verbose_name = '上传前景包'
+        verbose_name_plural = '上传前景包'
 
     def get_all_category_names(self):
         return [c.name for c in self.categories.all()]
@@ -43,10 +45,11 @@ class UploadForeground(Upload):
 
 
 class UploadBackground(Upload):
-    package = models.FileField(upload_to=upload_background_zip_to)
+    package = models.FileField("ZIP包", upload_to=upload_background_zip_to)
     class Meta:
         db_table = 'upload_background'
-
+        verbose_name = '上传背景包'
+        verbose_name_plural = '上传背景包'
 
 def package_uploaded(sender, instance, created, **kwargs):
     if not created:
