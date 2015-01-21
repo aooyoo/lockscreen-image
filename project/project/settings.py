@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'apps.image',
     'apps.upload',
     'apps.config',
+    'apps.feedback',
 )
 
 MIDDLEWARE_CLASSES = (

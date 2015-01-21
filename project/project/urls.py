@@ -4,6 +4,7 @@ from django.contrib import admin
 import apps.phone.views
 import apps.upload.views
 import apps.image.views
+import apps.feedback.views
 
 urlpatterns = [
     # Examples:
@@ -28,5 +29,8 @@ urlpatterns = [
 
     url(r'^collect/show/$', apps.image.views.show_collected_images),
 
-    url(r'^foreground/category/$', apps.image.views.get_foregound_category)
+    url(r'^foreground/category/$', apps.image.views.get_foregound_category),
+
+
+    url(r'feedback/$', apps.feedback.views.feedback),
 ]
