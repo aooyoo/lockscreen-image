@@ -9,6 +9,8 @@ from project.errorcode import ErrorCode
 from apps.phone.models import Phone
 from apps.phone.forms import LoginForm
 
+from apps.config.models import Config
+
 
 def login(request):
     if request.method == 'GET':
@@ -45,12 +47,11 @@ def login(request):
     request.session['udid'] = udid
     request.session['phone'] = phone
 
-    # TODO
     data = {
         'ret': 0,
         'data': {
-            'version': '1',
-            'copyright': 'good!'
+            'version': Config.get_value('version'),
+            'copyright': Config.get_value('copyright'),
         }
     }
 

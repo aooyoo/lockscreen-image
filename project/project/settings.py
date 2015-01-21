@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'apps.phone',
     'apps.image',
     'apps.upload',
+    'apps.config',
 )
 
 MIDDLEWARE_CLASSES = (
