@@ -264,19 +264,34 @@ def show_collected_images(request):
         raise ProjectException(ErrorCode.REQUEST_ERROR)
 
     udid = request.session['udid']
-    phone = request.session['phone']
 
-    paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')[bucket*BUCKET_SIZE, (bucket+1)*BUCKET_SIZE]
+    paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')[bucket*BUCKET_SIZE: (bucket+1)*BUCKET_SIZE]
 
     if paris.count < BUCKET_SIZE:
         next_bucket = None
     else:
         next_bucket = bucket + 1
 
-    item_background_ids = []
-    item_foreground_ids = []
+    def _make_item(p):
+        return {
+            'background': {
+                'ID': p.background_id,
+                'url': settings.QINIU_DOMAIN + p.background_key,
+            },
+            'foreground': {
+                'ID': p.foreground_id,
+                'url': settings.QINIU_DOMAIN + p.foreground_key,
+            }
+        }
 
-    for p in paris:
-        item_background_ids.append(p.background_id)
-        item_foreground_ids.append(p.foreground_id)
+    items = [_make_item(p) for p in paris]
 
+    data = {
+        'ret': 0,
+        'data': {
+            'next_bucket_id': next_bucket,
+            'items': items
+        }
+    }
+
+    return JsonResponse(data)

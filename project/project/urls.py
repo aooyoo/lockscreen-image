@@ -26,5 +26,7 @@ urlpatterns = [
     url(r'^uncollect/$', apps.image.views.ImagePairView.as_view()),
     url(r'^download/$', apps.image.views.ImagePairView.as_view()),
 
+    url(r'^collect/show/$', apps.image.views.show_collected_images),
+
     url(r'^foreground/category/$', apps.image.views.get_foregound_category)
 ]
