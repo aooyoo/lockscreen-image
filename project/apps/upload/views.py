@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 
 from apps.upload.models import UploadForeground, UploadBackground
 from apps.image.models import ImageForeground, ImageBackground
@@ -21,7 +21,7 @@ def callback_foreground(request):
         ImageObjs.append(
             ImageForeground(
                 categories=categories,
-                images=json.dumps(image)
+                images=image
             )
         )
 
@@ -40,7 +40,7 @@ def callback_background(request):
     for image in images:
         ImageObjs.append(
             ImageBackground(
-                images=json.dumps(image)
+                images=image
             )
         )
 
