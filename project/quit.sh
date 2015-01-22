@@ -1,4 +1,4 @@
 #!/bin/bash
 
-kill -QUIT `run/uwsgi.pid`
+kill -QUIT `cat run/uwsgi.pid`
 

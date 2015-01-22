@@ -1,4 +1,4 @@
 #!/bin/bash
 
-kill -HUP `run/uwsgi.pid`
+kill -HUP `cat run/uwsgi.pid`
 
