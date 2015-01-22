@@ -4,7 +4,7 @@ from apps.upload.models import UploadBackground, UploadForeground
 
 @admin.register(UploadForeground)
 class UploadForegroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'package', 'Categories', 'upload_at', 'done')
+    list_display = ('id', 'Categories', 'upload_at', 'done')
 
     filter_horizontal = ['categories',]
     exclude = ['done']
@@ -15,5 +15,5 @@ class UploadForegroundAdmin(admin.ModelAdmin):
 
 @admin.register(UploadBackground)
 class UploadBackgroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'package', 'upload_at', 'done')
+    list_display = ('id', 'upload_at', 'done')
     exclude = ['done']

@@ -11,3 +11,5 @@ env
 
 
 project/project/local_settings.py
+
+project/static
