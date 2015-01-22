@@ -15,5 +15,5 @@ iPhone6 Plus | i6p
 
 
 ## [API](/API.md)
-## [后台](/Admin.md)
+## [管理后台](/Admin.md)
 ## 服务器部署
