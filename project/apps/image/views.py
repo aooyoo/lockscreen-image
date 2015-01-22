@@ -19,7 +19,7 @@ from project.errorcode import ErrorCode
 
 def get_foregound_category(request):
     # 获取前景分类
-    categories = ForegroundCategory.objects.all()
+    categories = ForegroundCategory.objects.all().order_by('order_id')
     def _make_data(c):
         return {
             'ID': c.id,

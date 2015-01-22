@@ -27,6 +27,7 @@ class ForegroundCategory(models.Model):
     # id 1 固定为 全部
     # id 2 固定为 我的收藏
     id = models.IntegerField('ID', primary_key=True)
+    order_id = models.IntegerField('排序序号', db_index=True)
     name = models.TextField('中文名字', unique=True)
     name_en = models.TextField('英文名字')
     icon = models.FileField('图标', upload_to=upload_foreground_category_to)
@@ -34,6 +35,7 @@ class ForegroundCategory(models.Model):
 
     class Meta:
         db_table = 'category_foreground'
+        ordering = ['order_id',]
         verbose_name = '前景分类'
         verbose_name_plural = '前景分类'
 

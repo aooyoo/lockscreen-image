@@ -13,7 +13,7 @@ from apps.image.models import (
 
 @admin.register(ForegroundCategory)
 class ForegroundCategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'name_en', 'IconDisplay')
+    list_display = ('id', 'order_id', 'name', 'name_en', 'IconDisplay')
     exclude = ['key',]
 
     def IconDisplay(self, obj):
