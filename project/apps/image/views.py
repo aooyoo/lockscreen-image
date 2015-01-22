@@ -23,7 +23,8 @@ def get_foregound_category(request):
     def _make_data(c):
         return {
             'ID': c.id,
-            'name': c.name,
+            'name_zh': c.name,
+            'name_en': c.name_en,
             'icon': c.image_url,
         }
 

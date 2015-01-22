@@ -27,7 +27,8 @@ class ForegroundCategory(models.Model):
     # id 1 固定为 全部
     # id 2 固定为 我的收藏
     id = models.IntegerField('ID', primary_key=True)
-    name = models.TextField('名字', unique=True)
+    name = models.TextField('中文名字', unique=True)
+    name_en = models.TextField('英文名字')
     icon = models.FileField('图标', upload_to=upload_foreground_category_to)
     key = models.TextField(blank=True)
 
@@ -107,8 +108,16 @@ class ImagePairForDownload(ImagePair):
 
 def upload_category_icon(sender, instance, created, **kwargs):
     from sevencow import Cow
-    if not created:
-        return
+
+    if instance.key:
+        with open(instance.icon.path, 'rb') as f:
+            data = f.read()
+
+        md5 = hashlib.md5(data).hexdigest()
+        key, ext = os.path.splitext(instance.key)
+        if md5 == key:
+            # icon 没有变化
+            return
 
     c = Cow(settings.QINIU_ACCESS_KEY, settings.QINIU_SECRET_KEY)
     bucket = c.get_bucket(settings.QINIU_BUCKET)

@@ -39,7 +39,7 @@ iPhone6 Plus | i6p
 版本    |   时间        | 描述
 --------|---------------|----------
 v1.0    |   2015-01-17  | 创建
-
+v1.1    |   2015-01-22  | 修改
 
 ----------------
 
@@ -163,13 +163,15 @@ GET PARAM:
     'data': [
         {
             'ID': <分类1 ID>,
-            'name': <分类1 名字>,
+            'name_zh': <分类1 中文名字>,
+            'name_en': <分类1 英文名字>,
             'icon': <icon1  url>
         },
     
         {
             'ID': <分类2 ID>,
-            'name': <分类2 名字>,
+            'name_zh': <分类2 中文名字>,
+            'name_en': <分类2 英文名字>,
             'icon': <icon2  url>
         },
 
@@ -286,7 +288,9 @@ GET PARAM:
 
 ###### Request
 POST Form:
-*   text:  反馈的文字
+*   email: 用户邮箱 - 可选
+*   country: 用户国家 - 可选 （最好是自动检测手机地区设置，自动获取国家）
+*   content: 反馈的内容 - 比选
 
 ###### Response
 
@@ -300,5 +304,5 @@ POST Form:
 
 ## 错误代码
 
-见 [errorcode.json][/errorcode.json]
+见 ![errorcode.json][/errorcode.json]
 
