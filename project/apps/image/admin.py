@@ -17,21 +17,37 @@ class ForegroundCategoryAdmin(admin.ModelAdmin):
     exclude = ['key',]
 
     def IconDisplay(self, obj):
-        return '<img src="{0}" width="100px"/>'.format(obj.image_url)
+        url = obj.image_url
+        return '<a href="{0}" target=_blank><img src="{0}" width="50px" /></a>'.format(
+            url
+        )
     IconDisplay.allow_tags = True
 
 
 @admin.register(ImageForeground)
 class ImageForegroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'upload_at', 'score', 'images', 'categories')
+    list_display = ('id', 'upload_at', 'score', 'images', 'categories', 'ImageShow')
     ordering = ['-upload_at',]
+
+    def ImageShow(self, obj):
+        url = settings.QINIU_DOMAIN + obj.images.values()[0]
+        return '<a href="{0}" target=_blank><img src="{0}" width="50px" /></a>'.format(
+            url
+        )
+    ImageShow.allow_tags = True
 
 
 @admin.register(ImageBackground)
 class ImageBackgroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'upload_at', 'score', 'images')
+    list_display = ('id', 'upload_at', 'score', 'images', 'ImageShow')
     ordering = ['-upload_at',]
 
+    def ImageShow(self, obj):
+        url = settings.QINIU_DOMAIN + obj.images.values()[0]
+        return '<a href="{0}" target=_blank><img src="{0}" width="50px" /></a>'.format(
+            url
+        )
+    ImageShow.allow_tags = True
 
 
 @admin.register(ImagePairForCollect)
