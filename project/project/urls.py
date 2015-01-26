@@ -14,8 +14,8 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^login/$', apps.phone.views.login),
-    url(r'^callback/foreground-done/$', apps.upload.views.callback_foreground),
-    url(r'^callback/background-done/$', apps.upload.views.callback_background),
+    url(r'^callback/foreground/$', apps.upload.views.CallbackHandler.as_view()),
+    url(r'^callback/background/$', apps.upload.views.CallbackHandler.as_view()),
 
 
     url(r'^foreground/hot/$', apps.image.views.ImageGetterView.as_view()),
