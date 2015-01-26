@@ -5,6 +5,8 @@
 *.o
 *.so
 *.log
+*.zip
+
 
 env
 .idea
