@@ -61,16 +61,16 @@ class ImageGetterView(object):
 
     def build_sql_for_foreground(self):
         if self.category:
-            sql = "select id, images->>%s as image_key from {0} where hide = 0 (images->>%s) is not null and array[%s] <@ categories order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
+            sql = "select id, images->>%s as image_key from {0} where hide = 0 and (images->>%s) is not null and array[%s] <@ categories order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
             params = (self.phone, self.phone, self.category, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
         else:
-            sql = "select id, images->>%s as image_key from {0} where hide = 0 (images->>%s) is not null order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
+            sql = "select id, images->>%s as image_key from {0} where hide = 0 and (images->>%s) is not null order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
             params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
 
         return sql, params
 
     def build_sql_for_background(self):
-        sql = "select id, images->>%s as image_key from {0} where hide = 0 (images->>%s) is not null order by {1} offset %s limit %s".format(ImageBackground._meta.db_table,  self.order_by)
+        sql = "select id, images->>%s as image_key from {0} where hide = 0 and (images->>%s) is not null order by {1} offset %s limit %s".format(ImageBackground._meta.db_table,  self.order_by)
         params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
         return sql, params
 
