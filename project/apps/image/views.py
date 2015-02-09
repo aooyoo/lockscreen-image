@@ -256,20 +256,22 @@ class ImagePairView(View):
 
 def show_collected_images(request):
     # 获取收藏的前景/背景组合
-    BUCKET_SIZE = 45
-    try:
-        bucket = int(request.GET.get('bucket', 0))
-    except:
-        raise ProjectException(ErrorCode.REQUEST_ERROR)
+    # BUCKET_SIZE = 45
+    # try:
+    #     bucket = int(request.GET.get('bucket', 0))
+    # except:
+    #     raise ProjectException(ErrorCode.REQUEST_ERROR)
 
     udid = request.session['udid']
 
-    paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')[bucket*BUCKET_SIZE: (bucket+1)*BUCKET_SIZE]
+    # paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')[bucket*BUCKET_SIZE: (bucket+1)*BUCKET_SIZE]
+    paris = ImagePairForCollect.objects.filter(phone_udid=udid).order_by('-action_date')
 
-    if paris.count < BUCKET_SIZE:
-        next_bucket = None
-    else:
-        next_bucket = bucket + 1
+    # if paris.count < BUCKET_SIZE:
+    #     next_bucket = None
+    # else:
+    #     next_bucket = bucket + 1
+    next_bucket = None
 
     def _make_item(p):
         return {
