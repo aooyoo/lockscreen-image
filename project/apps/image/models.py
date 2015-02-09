@@ -59,6 +59,9 @@ class Image(models.Model):
     # http://www.postgresql.org/docs/9.4/static/functions-json.html
     images = JSONField()
 
+    # 是否隐藏
+    hide = models.BooleanField(default=False, db_index=True)
+
     class Meta:
         abstract = True
 

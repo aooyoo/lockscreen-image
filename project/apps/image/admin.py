@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 
 from django.conf import settings
 from django.contrib import admin
@@ -9,6 +11,16 @@ from apps.image.models import (
     ImagePairForCollect,
     ImagePairForDownload,
 )
+
+
+def _images_hide_action(modeladmin, request, queryset):
+    queryset.update(hide=True)
+_images_hide_action.short_description = "隐藏图片"
+
+def _images_unhide_action(modeladmin, request, queryset):
+    queryset.update(hide=False)
+_images_unhide_action.short_description = "显示图片"
+
 
 
 @admin.register(ForegroundCategory)
@@ -26,8 +38,9 @@ class ForegroundCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(ImageForeground)
 class ImageForegroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'upload_at', 'score', 'images', 'categories', 'ImageShow')
+    list_display = ('id', 'upload_at', 'score', 'images', 'categories', 'ImageShow', 'hide')
     ordering = ['-upload_at',]
+    actions = ['_images_hide_action', '_images_unhide_action']
 
     def ImageShow(self, obj):
         url = settings.QINIU_DOMAIN + obj.images.values()[0]
@@ -39,8 +52,9 @@ class ImageForegroundAdmin(admin.ModelAdmin):
 
 @admin.register(ImageBackground)
 class ImageBackgroundAdmin(admin.ModelAdmin):
-    list_display = ('id', 'upload_at', 'score', 'images', 'ImageShow')
+    list_display = ('id', 'upload_at', 'score', 'images', 'ImageShow', 'hide')
     ordering = ['-upload_at',]
+    actions = ['_images_hide_action', '_images_unhide_action']
 
     def ImageShow(self, obj):
         url = settings.QINIU_DOMAIN + obj.images.values()[0]
