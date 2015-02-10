@@ -2,6 +2,7 @@ https://www.djangoproject.com/download/1.8a1/tarball/
 psycopg2
 jsonfield
 django-redis-sessions
+django-mailgun
 redis
 hiredis
 arrow

@@ -118,7 +118,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-SESSION_COOKIE_AGE = 3600 * 2   # 2 days
+SESSION_COOKIE_AGE = 3600 * 24 * 2   # 2 days
 SESSION_ENGINE = 'redis_sessions.session'
 
 
@@ -135,6 +135,11 @@ QINIU_ACCESS_KEY = None
 QINIU_SECRET_KEY = None
 QINIU_BUCKET = None
 ##################################
+# mailgun
+SERVER_EMAIL = 'lockscreen <lockscreen@lockscreen.com>'
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+MAILGUN_ACCESS_KEY = None
+MAILGUN_SERVER_NAME = None
 
 # beanstalkd
 BEAN_HOST = '127.0.0.1'
