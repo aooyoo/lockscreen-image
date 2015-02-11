@@ -178,7 +178,10 @@ class ImageUpload(object):
 
                 to_mails = [admin[1] for admin in settings.ADMINS]
                 mail = Mailgun(settings.MAILGUN_ACCESS_KEY, settings.MAILGUN_SERVER_NAME)
-                mail.send_message(settings.SERVER_EMAIL, to_mails, subject="Worker Error", text=error_data)
+                try:
+                    mail.send_message(settings.SERVER_EMAIL, to_mails, subject="Worker Error", text=error_data)
+                except:
+                    log(traceback.format_exc())
             finally:
                 job.delete()
 
