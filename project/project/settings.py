@@ -148,6 +148,8 @@ BEAN_TTR = 60 * 15  # 15 minutes
 
 LISTEN_URL = 'http://127.0.0.1:8000/'
 
+ADMINS = (('Wang Chao', 'my_sting@163.com'),)
+
 
 try:
     from local_settings import *

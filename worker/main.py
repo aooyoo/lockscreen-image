@@ -18,9 +18,12 @@ import datetime
 from collections import defaultdict
 from contextlib import contextmanager
 
+import traceback
+
 import beanstalkc
 import sevencow
 import requests
+from mailgun2 import Mailgun
 
 from project import settings
 
@@ -159,7 +162,6 @@ class ImageUpload(object):
         callback_data['images'] = result_data
         self.feedback(callback_url, callback_data)
 
-        job.delete()
         log("---- End Job {0} ----".format(job.jid))
 
 
@@ -168,7 +170,17 @@ class ImageUpload(object):
         self = cls()
         while True:
             job = self.bean.reserve()
-            self.process(job)
+            try:
+                self.process(job)
+            except:
+                error_data = traceback.format_exc()
+                log(error_data)
+
+                to_mails = [admin[1] for admin in settings.ADMINS]
+                mail = Mailgun(settings.MAILGUN_ACCESS_KEY, settings.MAILGUN_SERVER_NAME)
+                mail.send_message(settings.SERVER_EMAIL, to_mails, subject="Worker Error", text=error_data)
+            finally:
+                job.delete()
 
 
 if __name__ == '__main__':

@@ -11,3 +11,4 @@ beanstalkc
 pyyaml
 sevencow
 daemonized
+mailgun2
