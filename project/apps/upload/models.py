@@ -55,9 +55,6 @@ class UploadBackground(Upload):
         verbose_name_plural = '上传背景包'
 
 def package_uploaded(sender, instance, created, **kwargs):
-    if not created:
-        return
-
     if sender is UploadForeground:
         callback_url = settings.LISTEN_URL.rstrip('/') + '/callback/foreground/'
     else:
