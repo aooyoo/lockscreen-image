@@ -3,6 +3,7 @@
 import os
 import time
 import uuid
+import json
 import hashlib
 
 from django.db import models
@@ -57,7 +58,7 @@ class Image(models.Model):
 
     # {'i4': key, 'i5': key, ...}
     # http://www.postgresql.org/docs/9.4/static/functions-json.html
-    images = JSONField()
+    images = JSONField(default=json.dumps({}))
 
     # 是否隐藏
     hide = models.BooleanField(default=False, db_index=True)
