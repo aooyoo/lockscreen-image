@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.db import DataError
 from django.views.generic import View
 
-
+from apps.config.models import Config
 from apps.image.models import ForegroundCategory, ImageBackground, ImageForeground, ImagePairForCollect, ImagePairForDownload
 from apps.image.forms import ImagePairForm
 
@@ -44,6 +44,18 @@ class ImageGetterView(object):
         self.request = request
         self.bucket = int(request.GET.get('bucket', 0))
         self.category = int(request.GET.get('category', 0))
+
+        client_version = request.META.get('Client-Version', '')
+        if not client_version:
+            self.is_current_version = True
+        else:
+            self.is_current_version = Config.get_value('version') == client_version
+
+        if self.is_current_version:
+            self.hide_text = ''
+        else:
+            self.hide_text = "hide = 'FALSE' and"
+
         if self.category == 1:
             # all
             self.category = 0
@@ -61,28 +73,30 @@ class ImageGetterView(object):
 
     def build_sql_for_foreground(self):
         if self.category:
-            sql = "select id, images->>%s as image_key from {0} where hide = FALSE and (images->>%s) is not null and array[%s] <@ categories order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
+            sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null and array[%s] <@ categories order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
             params = (self.phone, self.phone, self.category, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
         else:
-            sql = "select id, images->>%s as image_key from {0} where hide = FALSE and (images->>%s) is not null order by {1} offset %s limit %s".format(ImageForeground._meta.db_table, self.order_by)
+            sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
             params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
 
         return sql, params
 
+
     def build_sql_for_background(self):
-        sql = "select id, images->>%s as image_key from {0} where hide = FALSE and (images->>%s) is not null order by {1} offset %s limit %s".format(ImageBackground._meta.db_table,  self.order_by)
+        sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null order by {2} offset %s limit %s".format(ImageBackground._meta.db_table, self.hide_text, self.order_by)
         params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
+
         return sql, params
 
 
     def get(self):
         if self.request.path.startswith('/foreground/'):
-            sql, parms = self.build_sql_for_foreground()
+            sql, params = self.build_sql_for_foreground()
         else:
-            sql, parms = self.build_sql_for_background()
+            sql, params = self.build_sql_for_background()
 
         with connection.cursor() as c:
-            c.execute(sql, parms)
+            c.execute(sql, params)
             result = c.fetchall()
 
         if len(result) == self.BUCKET_SIZE:

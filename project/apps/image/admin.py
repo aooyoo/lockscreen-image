@@ -40,6 +40,7 @@ class ForegroundCategoryAdmin(admin.ModelAdmin):
 class ImageForegroundAdmin(admin.ModelAdmin):
     list_display = ('id', 'upload_at', 'score', 'images', 'categories', 'ImageShow', 'hide')
     ordering = ['-upload_at',]
+    list_filter = ('hide',)
     actions = [_images_hide_action, _images_unhide_action]
 
     def ImageShow(self, obj):
@@ -54,6 +55,7 @@ class ImageForegroundAdmin(admin.ModelAdmin):
 class ImageBackgroundAdmin(admin.ModelAdmin):
     list_display = ('id', 'upload_at', 'score', 'images', 'ImageShow', 'hide')
     ordering = ['-upload_at',]
+    list_filter = ('hide',)
     actions = [_images_hide_action, _images_unhide_action]
 
     def ImageShow(self, obj):
