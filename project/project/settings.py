@@ -25,7 +25,7 @@ if not os.path.isdir(UPLOAD_PATH):
 SECRET_KEY = '9r#f^dxc8fm3nqtw71z_b*=uxw#en+n!(!6fe@n-7=d-g=e43p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = False
 
