@@ -51,6 +51,7 @@ class ForegroundCategory(models.Model):
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     upload_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    show_at = models.DateTimeField(db_index=True)
 
     # score 用来打分，每收藏/下载一次+1, 取消收藏-1
     # 最热图片从这里排序获取

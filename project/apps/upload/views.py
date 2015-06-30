@@ -45,6 +45,7 @@ class CallbackHandler(object):
 
         return HttpResponse('ok')
 
+
     def process_foreground(self, images):
         upload_obj = UploadForeground.objects.get(id=self.upload_id)
         categories = upload_obj.get_all_category_ids()
@@ -54,7 +55,8 @@ class CallbackHandler(object):
             ImageObjs.append(
                 ImageForeground(
                     categories=categories,
-                    images=image
+                    images=image,
+                    show_at=upload_obj.show_at
                 )
             )
 
@@ -63,11 +65,14 @@ class CallbackHandler(object):
 
 
     def process_background(self, images):
+        upload_obj = UploadBackground.objects.get(id=self.upload_id)
+
         ImageObjs = []
         for image in images:
             ImageObjs.append(
                 ImageBackground(
-                    images=image
+                    images=image,
+                    show_at=upload_obj.show_at
                 )
             )
 

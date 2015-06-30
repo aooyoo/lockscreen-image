@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import arrow
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -70,21 +71,23 @@ class ImageGetterView(object):
         if self.bucket < 0:
             raise ProjectException(ErrorCode.REQUEST_ERROR)
 
+        self.now = arrow.utcnow().format('YYYY-MM-DD HH:mm:ssZ')
+
 
     def build_sql_for_foreground(self):
         if self.category:
-            sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null and array[%s] <@ categories order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
-            params = (self.phone, self.phone, self.category, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
+            sql = "select id, images->>%s as image_key from {0} where {1} show_at <= %s and (images->>%s) is not null and array[%s] <@ categories order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
+            params = (self.phone, self.now, self.phone, self.category, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
         else:
-            sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
-            params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
+            sql = "select id, images->>%s as image_key from {0} where {1} show_at <= %s and (images->>%s) is not null order by {2} offset %s limit %s".format(ImageForeground._meta.db_table, self.hide_text, self.order_by)
+            params = (self.phone, self.now, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
 
         return sql, params
 
 
     def build_sql_for_background(self):
-        sql = "select id, images->>%s as image_key from {0} where {1} (images->>%s) is not null order by {2} offset %s limit %s".format(ImageBackground._meta.db_table, self.hide_text, self.order_by)
-        params = (self.phone, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
+        sql = "select id, images->>%s as image_key from {0} where {1} show_at <= %s and (images->>%s) is not null order by {2} offset %s limit %s".format(ImageBackground._meta.db_table, self.hide_text, self.order_by)
+        params = (self.phone, self.now, self.phone, self.bucket*self.BUCKET_SIZE, self.BUCKET_SIZE)
 
         return sql, params
 
